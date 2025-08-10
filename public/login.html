@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>התחברות</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <h1>התחברות</h1>
+            <div class="nav-links">
+                <a href="index.html">בית</a>
+                <a href="signup.html">הרשמה</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="form-container">
+        <form id="loginForm">
+            <h2>התחבר לחשבון</h2>
+
+            <label for="email">אימייל:</label>
+            <input type="email" id="email" name="email" required />
+
+            <label for="password">סיסמה:</label>
+            <input type="password" id="password" name="password" placeholder="סיסמה" required />
+
+            <div id="lockMessage"></div>
+
+            <button type="submit" id="loginBtn">התחבר</button>
+        </form>
+    </main>
+
+    <script>
+        let isBlocked = false;
+        let blockInterval = null;
+
+        function lockPasswordField(seconds) {
+            const passwordInput = document.getElementById("password");
+            const lockMessage = document.getElementById("lockMessage");
+            const loginBtn = document.getElementById("loginBtn");
+
+            isBlocked = true;
+            passwordInput.disabled = true;
+            loginBtn.disabled = true;
+            lockMessage.style.display = "block";
+
+            let remaining = seconds;
+            lockMessage.innerText = `המשתמש נחסם למשך ${remaining} שניות`;
+
+            blockInterval = setInterval(() => {
+                remaining--;
+                if (remaining > 0) {
+                    lockMessage.innerText = `המשתמש נחסם למשך ${remaining} שניות`;
+                } else {
+                    clearInterval(blockInterval);
+                    passwordInput.disabled = false;
+                    loginBtn.disabled = false;
+                    lockMessage.style.display = "none";
+                    lockMessage.innerText = "";
+                    isBlocked = false;
+                }
+            }, 1000);
+        }
+
+        function clearPasswordField() {
+            const passwordInput = document.getElementById("password");
+            passwordInput.value = "";
+            passwordInput.focus();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            if (isBlocked) {
+                return;
+            }
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const res = await fetch("/api/users/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (res.status === 403 && data.remainingTime) {
+                    alert(data.message);
+                    lockPasswordField(data.remainingTime);
+                } else if (res.ok && data.token) {
+                    localStorage.setItem("token", data.token);
+                    alert("התחברת בהצלחה!");
+                    window.location.href = "index.html";
+                } else {
+                    alert(data.message || "שגיאה בהתחברות");
+                    clearPasswordField();
+                }
+            } catch (error) {
+                console.error("Login error:", error);
+                alert("שגיאה בהתחברות");
+                clearPasswordField();
+            }
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", handleLogin);
+    </script>
+</body>
+
+</html>

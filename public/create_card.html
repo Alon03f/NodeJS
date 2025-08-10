@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>יצירת כרטיס חדש</title>
+    <link rel="stylesheet" href="style.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            try {
+                const payload = JSON.parse(atob(token.split(".")[1]));
+                if (!payload.isBusiness) {
+                    alert("רק משתמשי עסק יכולים לגשת לעמוד זה");
+                    window.location.href = "index.html";
+                    return;
+                }
+            } catch (error) {
+                window.location.href = "login.html";
+                return;
+            }
+        });
+    </script>
+    <script src="main.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <h1>יצירת כרטיס עסקי</h1>
+            <div class="nav-links">
+                <a href="index.html">בית</a>
+                <a href="my_cards.html">הכרטיסים שלי</a>
+                <a href="login.html" id="loginLink" class="login-link">התחברות</a>
+                <a href="#" id="logoutLink" class="logout-link">התנתקות</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="form-container">
+        <form id="createCardForm">
+            <h2>פרטי הכרטיס</h2>
+
+            <label for="title">שם החברה: *</label>
+            <input type="text" id="title" name="title" required minlength="2" maxlength="255" />
+
+            <label for="subtitle">כותרת משנה: *</label>
+            <input type="text" id="subtitle" name="subtitle" required minlength="2" maxlength="255" />
+
+            <label for="description">תיאור: *</label>
+            <textarea id="description" name="description" required minlength="10" maxlength="1024"
+                placeholder="תאר את העסק שלך (לפחות 10 תווים)"></textarea>
+
+            <label for="phone">טלפון: *</label>
+            <input type="tel" id="phone" name="phone" required minlength="9" maxlength="15" placeholder="050-1234567" />
+
+            <label for="email">אימייל: *</label>
+            <input type="email" id="email" name="email" required placeholder="example@example.com" />
+
+            <label for="web">אתר:</label>
+            <input type="url" id="web" name="web" placeholder="https://example.com" />
+
+            <label for="image">תמונה (URL):</label>
+            <input type="url" id="image" name="image" placeholder="https://example.com/image.jpg" />
+
+            <h3>כתובת:</h3>
+
+            <label for="country">ארץ: *</label>
+            <input type="text" id="country" name="country" required minlength="2" maxlength="255" value="ישראל" />
+
+            <label for="city">עיר: *</label>
+            <input type="text" id="city" name="city" required minlength="2" maxlength="255" placeholder="תל אביב" />
+
+            <label for="street">רחוב: *</label>
+            <input type="text" id="street" name="street" required minlength="2" maxlength="255" placeholder="הרצל" />
+
+            <label for="houseNumber">מספר בית: *</label>
+            <input type="number" id="houseNumber" name="houseNumber" required min="1" placeholder="123" />
+
+            <label for="zip">מיקוד:</label>
+            <input type="number" id="zip" name="zip" min="0" placeholder="12345" />
+
+            <button type="submit">צור כרטיס</button>
+        </form>
+
+        <div id="debugInfo">
+            <h4>Debug Information:</h4>
+            <pre id="debugContent"></pre>
+        </div>
+    </main>
+
+    <script>
+        function toggleDebug() {
+            const debugDiv = document.getElementById('debugInfo');
+            debugDiv.style.display = debugDiv.style.display === 'none' ? 'block' : 'none';
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'd') {
+                e.preventDefault();
+                toggleDebug();
+            }
+        });
+
+        document.getElementById('createCardForm').addEventListener('submit', function (e) {
+            const formData = new FormData(this);
+            const data = {};
+
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            const debugContent = document.getElementById('debugContent');
+            if (debugContent) {
+                debugContent.textContent = JSON.stringify(data, null, 2);
+            }
+        });
+    </script>
+</body>
+
+</html>

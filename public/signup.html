@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>הרשמה</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <h1>הרשמה</h1>
+            <div class="nav-links">
+                <a href="index.html">בית</a>
+                <a href="login.html">התחברות</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="form-container">
+        <form id="signupForm">
+            <h2>טופס הרשמה</h2>
+
+            <label for="firstName">שם פרטי:</label>
+            <input type="text" id="firstName" name="firstName" required />
+
+            <label for="lastName">שם משפחה:</label>
+            <input type="text" id="lastName" name="lastName" required />
+
+            <label for="email">אימייל:</label>
+            <input type="email" id="email" name="email" required />
+
+            <label for="password">סיסמה:</label>
+            <input type="password" id="password" name="password" required />
+
+            <label for="phone">טלפון:</label>
+            <input type="tel" id="phone" name="phone" required />
+
+            <label for="isBusiness">
+                <input type="checkbox" id="isBusiness" name="isBusiness" />
+                משתמש עסקי
+            </label>
+
+            <button type="submit">הרשמה</button>
+        </form>
+    </main>
+</body>
+
+</html>
