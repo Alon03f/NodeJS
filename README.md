@@ -10,7 +10,7 @@ That I approach – whether it is through choosing colors, arranging elements, o
 This site was built from scratch and reflects my current abilities. Currently I am still studying for a FullStack professional degree, I aim high and look forward to the future in the field.
  
 ## Skills
-- HTML, CSS, JAVASCRIPT
+- HTML, CSS, JAVASCRIPT, NodeJS, React, MongoDB
 - GitHub & Git
  
 ## Contact
